@@ -113,21 +113,12 @@ export default function Home() {
               Every product is crafted with attention to detail, using premium materials that are built to last. We
               believe in sustainable fashion and ethical manufacturing practices.
             </p>
-            <Button
-              asChild
-              variant="outline"
-              className="mt-4 w-fit border-black text-black hover:bg-black hover:text-white"
-            >
-              <Link href="/about">
-                Learn More <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
           </div>
         </div>
       </section>
 
       {/* Newsletter */}
-      <section className="bg-rose-500 py-16 text-white">
+      {/* <section className="bg-rose-500 py-16 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-6 font-serif text-3xl font-bold tracking-tight md:text-4xl">Join Our Community</h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg">
@@ -145,7 +136,7 @@ export default function Home() {
             </Button>
           </form>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }
@@ -172,32 +163,39 @@ function CategoryCard({ title, image, link }: { title: string; image: string; li
   )
 }
 
-function ProductCard({ title, price, image, slug }: { title: string; price: number; image: string; slug: string }) {
+function ProductCard({ title, price, image, slug, description }: { 
+  title: string
+  price: number
+  image: string
+  slug: string
+  description?: string
+}) {
   return (
-    <Link
-      href={`/products/${slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg bg-white transition-all duration-300 hover:shadow-xl"
-    >
-      <div className="relative h-[300px] w-full overflow-hidden bg-gray-100">
-        <Image
-          src={image || "/placeholder.svg"}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="text-lg font-medium">{title}</h3>
-        <p className="mt-2 text-xl font-bold">${price.toFixed(2)}</p>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="mt-auto justify-start p-0 text-rose-500 hover:bg-transparent hover:text-rose-600"
-        >
-          View Product{" "}
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-2" />
-        </Button>
-      </div>
+    <Link href={`/products/${slug}`} className="block">
+      <article className="group flex flex-col sm:w-60 w-72 bg-white shadow-sm rounded-lg overflow-hidden hover:shadow-xl hover:shadow-gray-100 transition-all">
+        <div className="sm:w-60 w-72 h-60 overflow-hidden">
+          <Image
+            src={image || "/placeholder.svg"}
+            alt={title}
+            width={240}
+            height={240}
+            className="object-cover object-center w-full grayscale-[0.1] group-hover:grayscale-0 h-full rounded-md group-hover:scale-105 transition-all"
+          />
+        </div>
+        <div className="p-4">
+          <h3 className="font-semibold truncate">
+            {title}
+          </h3>
+          {description && (
+            <p className="text-gray-600 text-sm truncate">
+              {description}
+            </p>
+          )}
+          <div className="text-right mt-4">
+            <span className="font-semibold">${price.toFixed(2)}</span>
+          </div>
+        </div>
+      </article>
     </Link>
   )
 }

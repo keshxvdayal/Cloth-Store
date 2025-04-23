@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Filter, SlidersHorizontal } from "lucide-react"
@@ -78,7 +81,63 @@ const products = [
   },
 ]
 
+// Price ranges
+const priceRanges = {
+  "all": { min: 0, max: Infinity },
+  "under-25": { min: 0, max: 25 },
+  "25-50": { min: 25, max: 50 },
+  "50-100": { min: 50, max: 100 },
+  "over-100": { min: 100, max: Infinity }
+}
+
 export default function ProductsPage() {
+  // State for filters
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [priceRange, setPriceRange] = useState<string>("all")
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [sortBy, setSortBy] = useState<string>("featured")
+
+  // Filter products based on selected filters
+  const filteredProducts = products.filter(product => {
+    // Category filter
+    if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) {
+      return false
+    }
+
+    // Price filter
+    const range = priceRanges[priceRange as keyof typeof priceRanges]
+    if (product.price < range.min || product.price > range.max) {
+      return false
+    }
+
+    return true
+  })
+
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case "price-low":
+        return a.price - b.price
+      case "price-high":
+        return b.price - a.price
+      case "newest":
+        return parseInt(b.id) - parseInt(a.id)
+      default:
+        return 0
+    }
+  })
+
+  // Handle category changes
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(category)) {
+        return prev.filter(c => c !== category)
+      } else {
+        return [...prev, category]
+      }
+    })
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       {/* Page Header */}
@@ -96,21 +155,23 @@ export default function ProductsPage() {
               <h3 className="mb-4 text-lg font-medium">Categories</h3>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="category-all" />
+                  <Checkbox 
+                    id="category-all" 
+                    checked={selectedCategories.length === 0}
+                    onCheckedChange={() => setSelectedCategories([])}
+                  />
                   <Label htmlFor="category-all">All Products</Label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="category-tshirts" />
-                  <Label htmlFor="category-tshirts">T-Shirts</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="category-hoodies" />
-                  <Label htmlFor="category-hoodies">Hoodies</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="category-caps" />
-                  <Label htmlFor="category-caps">Caps</Label>
-                </div>
+                {["T-Shirts", "Hoodies", "Caps"].map((category) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`category-${category.toLowerCase()}`}
+                      checked={selectedCategories.includes(category)}
+                      onCheckedChange={() => handleCategoryChange(category)}
+                    />
+                    <Label htmlFor={`category-${category.toLowerCase()}`}>{category}</Label>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -118,7 +179,7 @@ export default function ProductsPage() {
 
             <div>
               <h3 className="mb-4 text-lg font-medium">Price Range</h3>
-              <RadioGroup defaultValue="all">
+              <RadioGroup value={priceRange} onValueChange={setPriceRange}>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem id="price-all" value="all" />
                   <Label htmlFor="price-all">All Prices</Label>
@@ -144,55 +205,14 @@ export default function ProductsPage() {
 
             <Separator />
 
-            <div>
-              <h3 className="mb-4 text-lg font-medium">Size</h3>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="size-xs" />
-                  <Label htmlFor="size-xs">XS</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="size-s" />
-                  <Label htmlFor="size-s">S</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="size-m" />
-                  <Label htmlFor="size-m">M</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="size-l" />
-                  <Label htmlFor="size-l">L</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="size-xl" />
-                  <Label htmlFor="size-xl">XL</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="size-xxl" />
-                  <Label htmlFor="size-xxl">XXL</Label>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            <div>
-              <h3 className="mb-4 text-lg font-medium">Color</h3>
-              <div className="flex flex-wrap gap-3">
-                {["Black", "White", "Gray", "Navy", "Red", "Green"].map((color) => (
-                  <div key={color} className="relative">
-                    <button
-                      className="h-8 w-8 rounded-full border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
-                      aria-label={color}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Separator />
-
-            <Button className="w-full">Apply Filters</Button>
+            <Button className="w-full" onClick={() => {
+              setSelectedCategories([])
+              setPriceRange("all")
+              setSelectedSizes([])
+              setSortBy("featured")
+            }}>
+              Reset Filters
+            </Button>
           </div>
         </div>
 
@@ -268,7 +288,7 @@ export default function ProductsPage() {
 
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="h-4 w-4" />
-              <Select defaultValue="featured">
+              <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
@@ -302,7 +322,7 @@ export default function ProductsPage() {
 
           {/* Products */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-            {products.map((product) => (
+            {sortedProducts.map((product) => (
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}

@@ -1,6 +1,9 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import { Heart, ShoppingBag, Star, ArrowRight } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -124,6 +127,7 @@ const getProductData = (slug: string) => {
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const product = getProductData(params.slug)
+  const [selectedImage, setSelectedImage] = useState(0)
 
   if (!product) {
     return (
@@ -164,7 +168,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         <div className="space-y-4">
           <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100">
             <Image
-              src={product.images[0]}
+              src={product.images[selectedImage]}
               alt={product.name}
               fill
               className="object-cover"
@@ -175,7 +179,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             {product.images.map((image, index) => (
               <button
                 key={index}
-                className="relative aspect-square w-full overflow-hidden rounded-md bg-gray-100 transition-all hover:ring-2 hover:ring-rose-500"
+                onClick={() => setSelectedImage(index)}
+                className={`relative aspect-square w-full overflow-hidden rounded-md bg-gray-100 transition-all 
+                  ${selectedImage === index 
+                    ? 'ring-2 ring-rose-500' 
+                    : 'hover:ring-2 hover:ring-rose-500/50'
+                  }`}
               >
                 <Image
                   src={image}
