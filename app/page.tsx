@@ -49,9 +49,9 @@ export default function Home() {
       <section className="container mx-auto py-16 px-4">
         <h2 className="mb-12 text-center font-serif text-3xl font-bold tracking-tight md:text-4xl">Shop by Category</h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <CategoryCard title="T-Shirts" image="https://themenectar.com/salient/ecommerce-ultimate/wp-content/uploads/sites/19/2018/08/8-back.jpg" link="/products/t-shirts" />
-          <CategoryCard title="Hoodies" image="https://nobero.com/cdn/shop/files/Imperfectlyperfectfront_befc14e1-f69e-4272-bba8-3837067f136d.jpg?v=1731586540" link="/products/hoodies" />
-          <CategoryCard title="Caps" image="https://m.media-amazon.com/images/I/61PF6uXthBL._AC_UY1100_.jpg" link="/products/caps" />
+          <CategoryCard title="T-Shirts" image="https://themenectar.com/salient/ecommerce-ultimate/wp-content/uploads/sites/19/2018/08/8-back.jpg" link="/products" />
+          <CategoryCard title="Hoodies" image="https://nobero.com/cdn/shop/files/Imperfectlyperfectfront_befc14e1-f69e-4272-bba8-3837067f136d.jpg?v=1731586540" link="/products" />
+          <CategoryCard title="Caps" image="https://m.media-amazon.com/images/I/61PF6uXthBL._AC_UY1100_.jpg" link="/products" />
         </div>
       </section>
 

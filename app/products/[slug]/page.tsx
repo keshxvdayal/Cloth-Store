@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import ImageMagnifier from "@/components/ImageMagnifier"
 
 // Product data mapping
 const productsData = {
@@ -167,12 +168,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         {/* Product Images */}
         <div className="space-y-4">
           <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100">
-            <Image
+            <ImageMagnifier
               src={product.images[selectedImage]}
               alt={product.name}
-              fill
-              className="object-cover"
-              priority
+              width={600}
+              height={800}
+              magnifierHeight={200}
+              magnifierWidth={200}
+              zoomLevel={2.5}
             />
           </div>
           <div className="grid grid-cols-4 gap-4">
